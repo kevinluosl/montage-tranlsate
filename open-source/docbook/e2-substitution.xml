@@ -1,0 +1,94 @@
+<sect1 id="substitution">
+  <title>Substitution</title>
+  <para>
+    <literal>Substitution</literal>组件的作用是控制一组元素，每次显示其中的一个。每个元素有一个特殊属性。<literal>Substitution</literal>将这个属性的值设置给<literal>switchValue</literal>属性来决定显示哪一个元素。
+  </para>
+  <para>
+    在<literal>Subsititution</literal>中的元素通过DOM的<literal>data-arg</literal>属性进行唯一标识符配置。这个就是被<literal>Subsititution</literal>使用的特殊属性。
+  </para>
+  <sect2 id="模版api">
+    <title>模版API</title>
+    <sect3 id="实例1">
+      <title>实例1</title>
+      <programlisting>
+&quot;substitution&quot;: {
+    &quot;prototype&quot;: &quot;montage/ui/substitution.reel&quot;,
+    &quot;properties&quot;: {
+        &quot;element&quot;: {&quot;#&quot;: &quot;substitution&quot;},
+        &quot;switchValue&quot;: &quot;profile&quot;
+    }
+}
+</programlisting>
+      <para>
+         
+      </para>
+      <programlisting>
+&lt;div data-montage-id=&quot;substitution&quot;&gt;
+    &lt;div data-arg=&quot;profile&quot;&gt;
+        First Name: Homer
+        Last Name: Simpson
+        Address: 742 Evergreen Terrace
+    &lt;/div&gt;
+    &lt;div data-arg=&quot;contact&quot;&gt;
+        Telephone: 555-3223
+        Email: homer@simpson.web
+    &lt;/div&gt;
+&lt;/div&gt;
+</programlisting>
+    </sect3>
+    <sect3 id="实例2">
+      <title>实例2</title>
+      <para>
+        Montage框架的其他组件同样可以作为<literal>Substitution</literal>的参数。
+      </para>
+      <programlisting>
+&quot;substitution&quot;: {
+    &quot;prototype&quot;: &quot;montage/ui/substitution.reel&quot;,
+    &quot;properties&quot;: {
+        &quot;element&quot;: {&quot;#&quot;: &quot;substitution&quot;},
+        &quot;switchValue&quot;: &quot;profile&quot;
+    }
+},
+
+&quot;userProfile&quot;: {
+    &quot;prototype&quot;: &quot;ui/user-profile.reel&quot;,
+    &quot;properties&quot;: {
+        &quot;element&quot;: {&quot;#&quot;: &quot;userProfile&quot;}
+    }
+},
+
+&quot;userContact&quot;: {
+    &quot;prototype&quot;: &quot;ui/user-contact.reel&quot;,
+    &quot;properties&quot;: {
+        &quot;element&quot;: {&quot;#&quot;: &quot;userContact&quot;}
+    }
+}
+</programlisting>
+      <para>
+         
+      </para>
+      <programlisting>
+&lt;div data-montage-id=&quot;substitution&quot;&gt;
+    &lt;div data-arg=&quot;profile&quot; data-montage-id=&quot;userProfile&quot;&gt;&lt;/div&gt;
+    &lt;div data-arg=&quot;contact&quot; data-montage-id=&quot;userContact&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</programlisting>
+    </sect3>
+  </sect2>
+  <sect2 id="程序api">
+    <title>程序API</title>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          <literal>addSwitchElement(key, element)</literal> -
+          添加一个元素作加入显示/隐藏列表。元素自己必须是根元素。
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          'switchValue' - 设置需要显示的元素。
+        </para>
+      </listitem>
+    </itemizedlist>
+  </sect2>
+</sect1>

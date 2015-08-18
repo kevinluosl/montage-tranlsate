@@ -1,0 +1,152 @@
+<sect1 id="montagejs-对象">
+  <title>MontageJS 对象</title>
+  <para>
+    MontageJS在JavaScript对象继承方式上做了一层简单封装。类型通过<literal>constructor</literal>方法构造。构造器有一个<literal>prototype</literal>。
+    <literal>prototype</literal>又有一个<literal>constructor</literal>方法。当在对象上执行<literal>instanceof</literal>和<literal>new</literal>时就跟JavaScript对象一样。
+  </para>
+  <para>
+    例如，下面的A和B两个例子是同等的：
+  </para>
+  <sect2 id="例ajavascript-ecmascript-5">
+    <title>例A：JavaScript (ECMAScript 5)</title>
+    <programlisting>
+function Penguin() {
+    Bird.call(this);
+}
+
+Penguin.prototype = Object.create(Bird.prototype);
+
+Penguin.prototype.constructor = Penguin;
+
+Penguin.prototype.fly = function () {
+    return Bird.prototype.fly.call(this);
+};
+
+Object.defineProperty(Penguin.prototype, &quot;habitat&quot;, {
+    get: function () {
+        return this._habitat;
+    },
+    set: function (value) {
+        this._habitat = value;
+    }
+});
+
+Penguin.staticMethod = function () {};
+</programlisting>
+  </sect2>
+  <sect2 id="例bmontagejs">
+    <title>例B：MontageJS</title>
+    <programlisting>
+var Penguin = Bird.specialize({
+    constructor: {
+        value: function Penguin() {
+            this.super();
+        }
+    },
+    fly: {
+        value: function () {
+            return this.super();
+        }
+    },
+    _habitat: {value: null},
+    habitat: {
+        get: function () {
+            return this._habitat;
+        },
+        set: function (value) {
+            this._habitat = value;
+        }
+    }
+}, {
+    staticMethod: {
+        value: function () {}
+    }
+});
+</programlisting>
+    <para>
+      MontageJS的构造器使用<literal>specialize</literal>方法接收2个参数，第一个参数接受<ulink url="http://ecma-international.org/ecma-262/5.1/#sec-8.6">ECMAScript
+      5</ulink>属性描述器来构造新的类，以及类的属性。第二个参数是可选参数，用来定义类方法。它使用<literal>Object.create</literal>来继承父类。使用<literal>Object.defineProperty</literal>来描述新类的属性。总的来说，这个方式提供了一个相对于原生Javascript更简易的，不易出错的方式来定义类。
+    </para>
+  </sect2>
+  <sect2 id="montagejs方法">
+    <title>MontageJS方法</title>
+    <para>
+      不过MontageJS也提供一些新增功能。在任何的<literal>Montage</literal>方法中，<literal>super(...args)</literal>会调用父类中同名的方法。同样，在get方法中使用<literal>super()</literal>
+      会获取父类同名属性，在set方法中使用<literal>super(value)</literal>会设置父类同名属性。
+    </para>
+    <para>
+      在这个例子中，<literal>Type</literal>类实现了一个<literal>id</literal>
+      get方法，返回值每访问一次加1。<literal>Subtype</literal>
+      重写了<literal>id</literal> get方法，在父类返回值前加一个下划线。
+    </para>
+    <programlisting>
+var ids = new WeakMap();
+var nextId = 0;
+var Type = Montage.specialize({
+    id: {
+        get: function () {
+            if (!ids.has(this)) {
+                ids.set(this, nextId++);
+            }
+            return ids.get(this);
+        }
+    }
+});
+
+var Subtype = Type.specialize({
+    id: {
+        get: function () {
+            return &quot;_&quot; + this.super();
+        }
+    }
+});
+</programlisting>
+    <para>
+      ontageJS还对<ulink url="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty">ES5
+      property-descriptor</ulink>做了一些其它的小修改。Javascript对象的任何属性如果不特殊指定都会出现在<literal>enumerable</literal>迭代中并且可<literal>writable</literal>
+      和
+      <literal>configurable</literal>。但是在MontageJS对象中如果属性名以下划线开始或者属性是一个方法，这两种属性都不会出现在迭代中。
+    </para>
+  </sect2>
+  <sect2 id="扩展javascript模型">
+    <title>扩展Javascript模型</title>
+    <para>
+      通过<literal>Montage.specialize</literal>增强JavaScript对象继承方式好处是构造方法可以继承父类构造方法，但是原型链是并行分开的。这样我们就有机会重写类的<literal>Montage.specialize</literal>，<literal>defineProperties</literal>，和<literal>defineProperty</literal>，所有继承这个类的子类都会调用相应的方法。Montage实现了<literal>specialize</literal>，<literal>defineProperties</literal>和<literal>defineProperty</literal>默认功能，类重写这些方法可以为所有继承于该类的子类的构造函数实现钩子模式。
+    </para>
+    <programlisting>
+var Type = Montage.specialize({
+}, {
+    specialize: {
+        value: function () {
+            return this.super();
+        }
+    },
+    defineProperty: {
+        value: function (object, descriptor) {
+            return this.super(object, descriptor);
+        }
+    }
+});
+</programlisting>
+    <para>
+      为了方便调试，你可以在构造方法中设置类型名，类型名会被存储在<literal>prototype</literal>属性中。因为把<literal>prototype</literal>属性设置为类型名，在原型链中就不是缺省的类型名（数字ID名），在调试时就知道当前对象类型。
+    </para>
+    <programlisting>
+var Type = Montage.specialize({
+    constructor: {
+        value: function Type() {
+            this.super();
+        }
+    }
+});
+
+var Subtype = Type.specialize({
+    constructor: {
+        value: function Subtype() {
+            return this.super();
+        }
+    }
+});
+</programlisting>
+  </sect2>
+</sect1>

@@ -1,0 +1,477 @@
+<sect1 id="montagejs模板声明语法">
+  <title>MontageJS模板声明语法</title>
+  <para>
+    这个文档主要讲解MontageJS序列化，反序列化格式，以及在模板中使用的声明语法。
+  </para>
+  <para>
+    MontageJS通过声明的方式定义对象、组件、属性、组件的数据绑定和对象与DOM元素之间的关联。MontageJS使用JavaScript的对象定义（JSON）作为序列化的格式。在运行时，MontageJS解析这些JSON内容，反序列化它们为JavaScript，然后在浏览器中执行。
+  </para>
+  <sect2 id="json-概述">
+    <title>JSON 概述</title>
+    <para>
+      JSON是一个用来序列化结构数据的文本格式，可以包括六种数据类型：
+    </para>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          四种基本类型：字符串，数字，布尔，和null
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          两种结构类型：对象和数组
+        </para>
+      </listitem>
+    </itemizedlist>
+    <para>
+      在JSON格式中，一个对象定义为一个无序的零个或者多个键/值对。键是一个字符串，值是JSON基础类型字符串，数字，布尔，和null其中一个。数组类型的值是用中括号包括零个或者多个基础类型（或者结构类型）数据。数组中的每个元素用逗号分隔。
+    </para>
+    <para>
+      比如，下面的JSON定义了一个名字是<literal>anObject</literal>的对象，对象包括三个属性：
+    </para>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          一个字符串类型<literal>id</literal>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          一个数组类型<literal>colors</literal>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          一个布尔值类型<literal>readyState</literal>
+        </para>
+      </listitem>
+    </itemizedlist>
+    <para>
+       
+    </para>
+    <programlisting>
+&quot;anObject&quot;: {
+    &quot;id&quot;: &quot;123asd&quot;,
+    &quot;colors&quot;: [ &quot;red&quot;, &quot;green&quot;, &quot;blue&quot;],
+    &quot;readyState&quot;: false
+}
+</programlisting>
+    <para>
+      除了这些标准的数据类型，MontageJS还为能够序列化复杂对象提供了几种特殊类型。这些类型包括引用同一个模板中的其它对象，DOM元素关联，函数，和正则表达式。
+    </para>
+  </sect2>
+  <sect2 id="声明例子">
+    <title>声明例子</title>
+    <para>
+      以下是一个简单（完整）的MontageJS应用，全部定义在一个HTML文档中。这个例子向你展示在MontageJS中如何使用声明以及为什么它很方便使用。
+    </para>
+    <programlisting>
+&lt;html&gt;
+   &lt;script src=&quot;../../montage.js&quot;&gt;&lt;/script&gt;
+   &lt;script type=&quot;text/montage-serialization&quot;&gt;
+   {
+       &quot;firstName&quot;: {
+           &quot;prototype&quot;: &quot;digit/ui/text-field.reel&quot;,
+           &quot;properties&quot;: {
+               &quot;element&quot;: {&quot;#&quot;: &quot;fName&quot;}
+           }
+        }
+   }
+   &lt;/script&gt;
+   &lt;body&gt;
+    &lt;input data-montage-id=&quot;fName&quot;&gt;&lt;/input&gt;
+   &lt;body&gt;
+&lt;/html&gt;
+</programlisting>
+    <para>
+      需要注意以下几点：
+    </para>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          HTML body中包含一个 <literal>&lt;input&gt;</literal>
+          标签，用<ulink url="http://www.whatwg.org/specs/web-apps/current-work/multipage/elements.html#custom-data-attribute">custom
+          data-attribute</ulink> data-montage-id
+          标记为<literal>fName</literal>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          在头部定义了类型为<literal>text/montage-serialization</literal>的<literal>&lt;script&gt;</literal>区块。文档中所有的MontageJS序列化对象包含在里面。
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          在HTML模板中定义了一个名字为<literal>firstName</literal>的TextField组件对象。在表单中组件的原型id(&quot;digit/ui/text-field.reel&quot;)，是为了在运行时MontageJS能够根据id创建相应的组件。
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <literal>properties</literal>在MontageJS组件中是一个非常重要的属性，它负责把HTML元素和对应的组件对象关联在一起。在这个例子中TextField组件的<literal>element</literal>属性设置为<literal>&lt;input&gt;</literal>标签的ID&quot;<literal>fName</literal>&quot;。这是MontageJS序列化提供一种特殊JSON格式，让HTML元素和对象关联在一起。键值是一个井号（&quot;#&quot;），值是HTML元素的ID。
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          MontageJS从一个.reel结尾的目录中加载组件。模块系统会重定向<literal>require(&quot;x.reel&quot;)</literal>为<literal>require(&quot;x.reel/x&quot;)</literal>。
+        </para>
+      </listitem>
+    </itemizedlist>
+  </sect2>
+</sect1>
+<sect1 id="声明中的owner">
+  <title>声明中的Owner</title>
+  <para>
+    在MontageJS模板声明中可以定义一个可选的对象&quot;owner&quot;。这个特殊的<literal>owner</literal>对象功能是文档的控制器。例如，下面的代码就创建一个新的模块(main.js)，模块名是<literal>Main</literal>。
+  </para>
+  <programlisting>
+// Module: main.js
+// Exported object name: Main
+var Component = require(&quot;montage/ui/component&quot;).Component;
+//
+exports.Main = Component.specialize({
+// Prototype methods and properties
+})
+&lt;script type=&quot;text/montage-serialization&quot;&gt;
+{
+   &quot;owner&quot;: {
+       &quot;prototype&quot;: &quot;main&quot;,
+       &quot;properties&quot;: {
+           &quot;element&quot;: {&quot;#&quot;: &quot;main&quot;}
+       }
+    }
+}
+&lt;/script&gt;
+</programlisting>
+  <sect2 id="声明格式">
+    <title>声明格式</title>
+    <para>
+      下面部分开始讲解object-dependent声明。
+    </para>
+    <sect3 id="序列化自定义对象">
+      <title>序列化自定义对象</title>
+      <para>
+        为了序列化自定义JavaScript对象和MontageJS组件，需要定义JSON对象并且设置<literal>prototype</literal>属性。这个属性定义用什么组建来实例化对象。
+      </para>
+      <para>
+        例如，下面的代码片段定义了一个Button组件：
+      </para>
+      <programlisting>
+&lt;script type=&quot;text/montage-serialization&quot;&gt;
+{
+    &quot;loginButton&quot;: {
+        &quot;prototype&quot;: &quot;digit/ui/button.reel&quot;
+    }
+}
+&lt;/script&gt;
+</programlisting>
+      <para>
+        在运行时，MontageJS把这些声明解析为以下的JavaScript然后运行：
+      </para>
+      <programlisting>
+var Button = require(&quot;digit/ui/button.reel&quot;).Button;
+</programlisting>
+      <para>
+        注意，在声明中的对象标签（例如上面例子中的&quot;<literal>loginButton</literal>&quot;）只能够通过owner组件的<literal>templateObjects</literal>属性来获取。
+      </para>
+      <para>
+        在声明中你可以设置对象的初始属性值，在声明中添加一个<literal>properties</literal>属性。例如，按钮组件可以设置显示在按钮上面的文本内容<literal>value</literal>。下面的代码设置按钮组件的<literal>value</literal>属性值为&quot;Click
+        me&quot;：
+      </para>
+      <programlisting>
+&quot;loginButton&quot;: {
+    &quot;prototype&quot;: &quot;digit/ui/button.reel&quot;,
+    &quot;properties&quot;: {
+       &quot;value&quot;: &quot;Click me&quot;
+    }
+}
+</programlisting>
+    </sect3>
+    <sect3 id="关联dom元素">
+      <title>关联DOM元素</title>
+      <para>
+        你可以在MontageJS声明中通过一种特殊的JSON对象表示方法将声明中的对象和DOM元素关联在一起。关联DOM元素的方法是把DOM元素的ID设置为组件的<literal>element</literal>属性。
+      </para>
+      <para>
+        用以下的语法可以通过元素的ID关联，<literal>elementID</literal>是当前文档中DOM元素的ID值：
+      </para>
+      <para>
+        <literal>{&quot;#&quot;: &quot;elementID&quot;}</literal>
+      </para>
+      <para>
+        例如，下面模板定义中<literal>Button</literal>组件的<literal>element</literal>属性值设置为<literal>&lt;div&gt;</literal>的ID
+        <literal>loginButton</literal>：
+      </para>
+      <programlisting>
+// index.html
+&lt;html&gt;
+ &lt;script src=&quot;../../montage.js&quot;&gt;&lt;/script&gt;
+ &lt;script type=&quot;text/montage-serialization&quot;&gt;
+ {
+      &quot;loginBtn&quot;: {
+        &quot;prototype&quot;: &quot;montage/ui/button.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;loginButton&quot;}
+        }
+      }
+ }
+ &lt;/script&gt;
+ &lt;body&gt;
+      &lt;div data-montage-id=&quot;loginButton&quot; class=&quot;Text&quot;&gt;Click to enter&lt;/div&gt;
+ &lt;body&gt;
+&lt;/html&gt;
+</programlisting>
+    </sect3>
+    <sect3 id="引用其它对象">
+      <title>引用其它对象</title>
+      <para>
+        很多时候你需要在模板定义中的一个对象中引用当前模板中的另外一个对象。例如，在模板定义中定义了一个MontageJS按钮然后你想在控制器（owner）对象中引用它。
+      </para>
+      <para>
+        用以下的JSON语法可以实现通过ID引用对象。在这个例子中，<literal>objectLabel</literal>是对象的标签。
+      </para>
+      <para>
+        <literal>{&quot;@&quot;: &quot;objectLabel&quot;}</literal>
+      </para>
+      <para>
+        首先在owner中定义一个用来引用对象的变量。owner对象是一个在JavaScript文件main.js中自定义的对象Main。Main组件定义了一个变量<literal>loginButton</literal>，然后把模板定义中的按钮对象赋值给它。
+        定义的变量可以在Main组件的其它任何地方使用，比如在组件加入文档之后会自动调用的<literal>enterDocument()</literal>方法中。
+        在这个例子中，我们在<literal>enterDocument()</literal>回调方法中为按钮对象添加一个事件监听器。在事件处理函数中向JavaScript控制台输出一个消息。
+      </para>
+      <programlisting>
+// Module: main.js
+// Name: Main
+var Component = require(&quot;montage/ui/component&quot;).Component;
+exports.Main = Component.specialize({
+    loginButton: {
+        value:null
+    },
+    handleAction: {
+        value: function(event) {
+            console.log(&quot;Button event handled...&quot;);
+            // Do login stuff...
+        }
+    },
+    enterDocument: {
+        value: function(firstTime) {
+            if (firstTime) {
+                this.loginButton.addEventListener(&quot;action&quot;, this)
+            }
+        }
+    }
+});
+</programlisting>
+      <para>
+        接下来，在HTML文档中定义按钮和Main两个组件。在第10行，按钮对象
+        &quot;<literal>loginBtn</literal>&quot;
+        被赋值给Main组件的&quot;<literal>loginButton</literal>&quot;
+        属性。
+      </para>
+      <programlisting>
+&lt;html&gt;
+ &lt;script src=&quot;../../montage.js&quot;&gt;&lt;/script&gt;
+ &lt;script type=&quot;text/montage-serialization&quot;&gt;
+ {
+    &quot;owner&quot;: {
+        &quot;prototype&quot;: &quot;ui/main.reel&quot;
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;main&quot;},
+            &quot;loginButton&quot;: {&quot;@&quot;: &quot;loginBtn&quot;}
+        }
+    },
+    &quot;loginBtn&quot;: {
+        &quot;prototype&quot;: &quot;digit/ui/button.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;buttonDiv&quot;}
+        }
+    }
+ }
+ &lt;/script&gt;
+&lt;body&gt;
+    &lt;div id=&quot;main&quot;&gt;
+        &lt;div data-montage-id=&quot;buttonDiv&quot; class=&quot;Text&quot;&gt;Click to enter&lt;/div&gt;
+    &lt;/div&gt;
+&lt;body&gt;
+&lt;/html&gt;
+</programlisting>
+    </sect3>
+  </sect2>
+  <sect2 id="模板声明中数据绑定">
+    <title>模板声明中数据绑定</title>
+    <para>
+      你可以在模板声明中定义事件监听器和数据绑定。为了更容易理解声明中的绑定语法，先讲解下JavaScript数据绑定函数<literal>Object.defineBinding()</literal>。这个函数接收三个参数：
+    </para>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          绑定目标对象
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          绑定目标对象的属性名
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          绑定方向和源路径
+        </para>
+      </listitem>
+    </itemizedlist>
+    <para>
+      在模板定义中是通过JSON对象实现绑定，所以你只需要定义JSON对象。
+    </para>
+    <programlisting>
+&quot;bindings&quot;: {
+       &quot;propertyName&quot;: {&quot;&lt;-&quot;: &quot;@targetObject.key.path.of.property&quot;}
+    }
+    
+Above can also be defined in JavaScript:
+
+    this.defineBinding(&quot;propertyName&quot;, {
+    &quot;&lt;-&quot;: &quot;targetObject.key.path.of.property&quot;
+});
+
+// or
+
+this.defineBindings({
+    &quot;propertyName&quot;: {
+        &quot;&lt;-&quot;: &quot;targetObject.key.path.of.property&quot;
+    }
+});
+</programlisting>
+    <para>
+      以下的例子就是在声明中定义数据绑定。第一个滑块的值被绑定到第二个滑块的值。默认的数据绑定方式是单方向，也就是源属性的值发生变化之后，这个变化传递到绑定的目标属性。
+      箭头
+      &quot;&lt;-&quot;或者&quot;&lt;-&gt;&quot;设置绑定是单向还是双向。
+    </para>
+    <programlisting>
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Slider binding text&lt;/title&gt;
+    &lt;script src=&quot;../../montage.js&quot;&gt;&lt;/script&gt;
+    &lt;script type=&quot;text/montage-serialization&quot;&gt;
+    {
+        &quot;slider1&quot;: {
+            &quot;prototype&quot;: &quot;digit/ui/slider.reel&quot;,
+            &quot;properties&quot;: {
+                &quot;element&quot;: {&quot;#&quot;: &quot;slider1&quot;}
+            },
+            &quot;bindings&quot;: {
+                &quot;value&quot;: {&quot;&lt;-&quot;: &quot;@slider2.value&quot;}
+            }
+        },
+        &quot;slider2&quot;: {
+            &quot;prototype&quot;: &quot;digit/ui/slider.reel&quot;,
+            &quot;properties&quot;: {
+                &quot;element&quot;: {&quot;#&quot;: &quot;slider2&quot;}
+            }
+        }
+    }
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div data-montage-id=&quot;slider1&quot;&gt;&lt;/div&gt;
+    &lt;div data-montage-id=&quot;slider2&quot;&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</programlisting>
+  </sect2>
+  <sect2 id="模板声明中定义事件监听器">
+    <title>模板声明中定义事件监听器</title>
+    <para>
+      你可以在模板声明中通过<literal>listeners</literal>属性设置事件监听器。
+    </para>
+    <para>
+      用这种方式可以减少很多的事件绑定代码。下面的例子定义两个对象：一个控制器对象（Controller）和一个按钮。控制器对象就是事件监听器的响应对象，当按钮被点击或者触摸之后会发送出&quot;action&quot;事件。
+    </para>
+    <para>
+      以下代码在组件控制器中定义一个叫做<literal>handleAction()</literal>方法，当用户点击按钮之后这个方法会被触发：
+    </para>
+    <programlisting>
+// Module: controller.js
+// Name: Controller
+var Montage = require(&quot;montage/core/core&quot;).Montage;
+exports.Controller = Montage.specialize({
+    handleAction: {
+        value: function(event) {
+            console.log(&quot;Button event handled...&quot;);
+            // Do login stuff...
+        }
+    },
+});
+</programlisting>
+    <para>
+      下面是一个组件的模板声明文档。在模板中的&quot;loginBtn&quot;对象包含一个数组类型的属性&quot;<literal>listeners</literal>&quot;。
+      这个数组可以包含一个或者多个监听器。
+    </para>
+    <programlisting>
+&lt;html&gt;
+ &lt;script src=&quot;../../montage.js&quot;&gt;&lt;/script&gt;
+ &lt;script type=&quot;text/montage-serialization&quot;&gt;
+ {
+    &quot;controller&quot;: {
+        &quot;prototype&quot;: &quot;controller&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;main&quot;},
+            &quot;loginButton&quot;: {&quot;@&quot;: &quot;loginBtn&quot;}
+        }
+    },
+    &quot;loginBtn&quot;: {
+        &quot;prototype&quot;: &quot;digit/ui/button.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;buttonDiv&quot;}
+        },
+        &quot;listeners&quot;: [
+            {
+                &quot;type&quot;: &quot;action&quot;,
+                &quot;listener&quot;: {&quot;@&quot;: &quot;controller&quot;},
+                &quot;capture&quot;: false
+            }
+        ]
+    }
+ }
+ &lt;/script&gt;
+&lt;body&gt;
+    &lt;div id=&quot;main&quot;&gt;
+        &lt;div data-montage-id=&quot;buttonDiv&quot; class=&quot;Text&quot;&gt;Click to enter&lt;/div&gt;
+    &lt;/div&gt;
+&lt;body&gt;
+&lt;/html&gt;
+</programlisting>
+  </sect2>
+  <sect2 id="序列化格式">
+    <title>序列化格式</title>
+    <para>
+      Serialization must be written in valid JSON format, as MontageJS
+      uses the browser's native JSON parsing APIs to parse the
+      serialization block. If there are formatting errors, MontageJS
+      throws an error and does not attempt to deserialize the JSON
+      object. Two common formatting concerns are:
+    </para>
+    <para>
+      序列化格式必须是一个合法的JSON格式，因为MontageJS使用浏览器本身的JSON解析APIs解析序列化内容。如果有格式错误，MontageJS抛出一个错误然后停止解析序列化里面的JSON对象。两个需要注意的格式：
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          结尾的逗号。在属性或者数组最后一个项目如果有逗号结束将会触发运行时错误。在下面的例子中<literal>readyState</literal>属性末尾有一个逗号，这就会触发JSON解析错误：
+        </para>
+        <programlisting>
+&quot;anObject&quot;: {
+    &quot;id&quot;: &quot;123asd&quot;,
+    &quot;colors&quot;: [ &quot;red&quot;, &quot;green&quot;, &quot;blue&quot;],
+    &quot;readystate&quot;: false,
+}
+</programlisting>
+      </listitem>
+      <listitem>
+        <para>
+          括号匹配。每一个开始括号与一个结束括号要一一对应。
+        </para>
+      </listitem>
+    </itemizedlist>
+    <para>
+      运行MontageJS应用的时，所有关于格式的错误信息会打印在控制台里面。在<ulink url="http://www.json.org/">http://www.json.org/</ulink>可查看更多关于JSON格式信息。
+    </para>
+  </sect2>
+</sect1>

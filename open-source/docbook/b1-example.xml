@@ -1,0 +1,257 @@
+<sect1 id="montagejs-例子">
+  <title>MontageJS 例子</title>
+  <para>
+    点击下面的链接查看对应组建的例子以及源码
+  </para>
+  <sect2 id="montagejs-组建">
+    <title>MontageJS 组建</title>
+    <para>
+      以下是MotageJS控件库实例
+    </para>
+    <blockquote>
+      <para>
+        <emphasis role="strong">现在的源码查看器正在开发调试中，请点击实例页面中的<literal>Gist</literal>链接直接从github查看源码</emphasis>
+      </para>
+    </blockquote>
+    <sect3 id="文本">
+      <title>文本</title>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5904314">Hello
+            World</ulink>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5904331">使用Javascript设置文本</ulink>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/6343006">使用绑定设置文本</ulink>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect3>
+    <sect3 id="页面控制">
+      <title>页面控制</title>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/07a089a44c73a908cb40">简单的repetition</ulink>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5906283">简单的substitution</ulink>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect3>
+    <sect3 id="转换器">
+      <title>转换器</title>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5904344">数字转换</ulink>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect3>
+    <sect3 id="composers">
+      <title>Composers</title>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/7852383">Press
+            composer</ulink>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/7854041">Translate
+            composer</ulink>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect3>
+    <sect3 id="方法">
+      <title>方法</title>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/aeffafd1efbdd80530d4">Repetition中排序</ulink>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect3>
+    <sect3 id="控制器">
+      <title>控制器</title>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/2e012d82ddd3d040cf74">Tree
+            Controller</ulink>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect3>
+  </sect2>
+  <sect2 id="组建digit">
+    <title>组建(Digit)</title>
+    <para>
+      下面的例子展示了针对移动设备优化的digit组建库中的组件的使用方法
+    </para>
+    <sect3 id="button">
+      <title>Button</title>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5906286">定义了identifier的按钮</ulink>
+            (事件处理)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5906289">没有定义identifier的按钮</ulink>(label作为默认的identifer)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5906291">不设置特定监听器的按钮</ulink>(<literal>handleAction()</literal>方法在<literal>action</literal>事件发出时会被调用)
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect3>
+    <sect3 id="textfield">
+      <title>TextField</title>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5906293">简单例子</ulink>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5906294">有placeholder的例子</ulink>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5906296">通过按钮实现禁用/启用的例子</ulink>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5906297">事件</ulink>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect3>
+    <sect3 id="slider">
+      <title>Slider</title>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5904461">简单例子</ulink>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5904468">双向绑定</ulink>(在Slider和TextField组件间)
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect3>
+    <sect3 id="numberfield">
+      <title>NumberField</title>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5904473">简单例子</ulink>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5904479">NumberField
+            组件间的绑定</ulink>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect3>
+    <sect3 id="select">
+      <title>Select</title>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5904481">简单例子</ulink>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5904482">通过RangeConntroller控制的Select</ulink>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/179e3a459daf280dabe1">Select和Repetition</ulink>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect3>
+    <sect3 id="checkbox">
+      <title>Checkbox</title>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5904488">简单例子</ulink>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect3>
+    <sect3 id="radiobutton">
+      <title>RadioButton</title>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5904493">一组RadioButton组建</ulink>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect3>
+    <sect3 id="image">
+      <title>Image</title>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5904495">简单例子</ulink>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect3>
+    <sect3 id="list">
+      <title>List</title>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/85e4c0b3986c31e0a2e3">分类列表</ulink>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect3>
+    <sect3 id="绘制周期">
+      <title>绘制周期</title>
+      <para>
+        绘制周期是一个让组件在适当的实际操作DOM的机制。
+      </para>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <ulink url="http://montagejs.github.io/mfiddle/#!/5904498">使用Slider组建改变元素的背景</ulink>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect3>
+  </sect2>
+</sect1>

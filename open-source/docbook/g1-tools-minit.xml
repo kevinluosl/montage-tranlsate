@@ -1,0 +1,69 @@
+<sect1 id="使用minit">
+  <title>使用minit</title>
+  <para>
+    MontageJS<ulink url="https://github.com/montagejs/minit">minit</ulink>是一个命令行工具，帮助开发者在开发过程中创建种子项目和在本机启动服务器运行项目。<literal>minit</literal>可以创建一个种子项目或文件目录或在一个已有的项目中新建组件。
+  </para>
+  <sect2 id="minit简单例子">
+    <title><literal>minit</literal>简单例子</title>
+    <para>
+      在项目目录运行以下命令：
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          创建一个新项目：
+        </para>
+        <programlisting>
+$ minit create:app -n app-name
+</programlisting>
+        <para>
+          上面的命令会新建一个<literal>app-name</literal>文件夹，在这个文件夹中包含MontageJS项目默认的目录以及依赖文件。
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          在项目中新建一个组件：
+        </para>
+        <programlisting>
+$ minit create:component -n component-name
+</programlisting>
+        <para>
+          上面的命令会在当前项目的ui文件夹中新建一个文件夹<literal>component-name.reel</literal>。里面包含组件的三个文件HTML,
+          CSS,和JS。
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          启动本地服务器，在浏览器中查看项目：
+        </para>
+        <programlisting>
+$ minit serve 
+</programlisting>
+        <para>
+          关闭服务器使用快捷键<literal>Ctrl C</literal>，如果要让服务器在后台运行在末尾添加
+          &amp; 参数：<literal>minit serve &amp;</literal>;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          获取<literal>minit</literal>的最新版本：
+        </para>
+        <programlisting>
+$ npm install -g minit@latest
+</programlisting>
+      </listitem>
+      <listitem>
+        <para>
+          查看minit命令行的全部参数：
+        </para>
+        <programlisting>
+$ minit --help
+</programlisting>
+      </listitem>
+    </itemizedlist>
+    <para>
+      在<ulink url="https://github.com/montagejs/minit">minit repo on
+      Github</ulink>上查看更多介绍。
+    </para>
+  </sect2>
+</sect1>

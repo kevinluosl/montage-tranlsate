@@ -1,0 +1,176 @@
+<sect1 id="错误排查">
+  <title>错误排查</title>
+  <sect2 id="montagejs应用没有按照预期效果在浏览器里面显示">
+    <title>MontageJS应用没有按照预期效果在浏览器里面显示。</title>
+    <para>
+      如果你在浏览器中测试一个MontageJS应用的时候，发现应用没有显示为预期效果，你可以打开JavaScript控制台查看错误和警告信息。大多数的浏览器包含JavaScript调试工具、控制台或相关的工具来帮助调试web应用。在新版的Chrome和Safari已经内置了这些开发工具。你可以使用浏览器的<literal>console.log()</literal>函数向控制台输出信息。
+    </para>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          打开Chrome控制台的方法是，选择 视图 &gt; 开发者 &gt;
+          JavaScript控制台。
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          打开Safari控制台方法是，首先开启开发者菜单（Safari偏好 &gt;
+          高级 &gt; 在菜单栏显示开发者菜单），然后选择开发者 &gt;
+          显示控制台错误信息。
+        </para>
+      </listitem>
+    </itemizedlist>
+  </sect2>
+  <sect2 id="运行montagejs应用的时候发生warning-element-xxx-not-found-in-template错误信息">
+    <title>运行MontageJS应用的时候发生“Warning: Element xxx not found in
+    template“错误信息。</title>
+    <para>
+      这样的错误发生一般是由于DOM元素的ID和对象的<literal>element</literal>属性值不匹配。例如，在以下的代码片段中，在对象(<literal>&quot;loginButton&quot;</literal>)
+      中引用的DOM元素ID
+      (<literal>&quot;loginBtn&quot;</literal>)与HTML中div元素不匹配。
+    </para>
+    <programlisting>
+&lt;script type=&quot;text/montage-serialization&quot;&gt;
+{
+    &quot;loginButton&quot;: {
+        &quot;name&quot;: &quot;Button&quot;,
+        &quot;module&quot;: &quot;montage/ui/button.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;loginButton&quot;}
+        }
+    }
+}
+&lt;/script&gt;
+&lt;body&gt;
+   &lt;div id=&quot;loginBtn&quot;/&gt;
+&lt;/body&gt;
+</programlisting>
+    <para>
+      在运行时，以上代码会在控制台输出以下错误信息：
+    </para>
+    <programlisting>
+Warning: Element &quot;#loginButton&quot; not found in template
+http://localhost:8081/examples/myapp/mycomponent.reel/mycomponent.html
+</programlisting>
+  </sect2>
+  <sect2 id="object-xxx-not-found-at-yyy错误信息">
+    <title>&quot;Object &quot;xxx&quot; not found at
+    &quot;yyy&quot;&quot;错误信息。</title>
+    <para>
+      如果你设置对象的<literal>&quot;name&quot;</literal>属性为一个不合法的值，MontageJS会输入以上错误信息。例如，下面的示例代码会产生这个错误，因为<literal>&quot;Button&quot;</literal>被错误拼写为
+      <literal>&quot;Buttonn&quot;</literal>。
+    </para>
+    <programlisting>
+{
+    &quot;loginButton&quot;: {
+        &quot;name&quot;: &quot;Buttonn&quot;,
+        &quot;module&quot;: &quot;montage/ui/button.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;loginButton&quot;}
+        }
+    }
+}
+&lt;/script&gt;
+</programlisting>
+    <para>
+      在控制台中有如下运行时错误：
+    </para>
+    <programlisting>
+Object &quot;Buttonn&quot; not found at &quot;montage/ui/button.reel&quot; referenced from http://localhost:8081/examples/buttonerror/.
+</programlisting>
+  </sect2>
+  <sect2 id="cant-xhr-httplocalhost-...错误信息">
+    <title>&quot;Can't XHR &quot;http://localhost:
+    ...&quot;错误信息。</title>
+    <para>
+      如果在组件HTML模板中使用无效的模块ID，在控制台中就有&quot;Can't
+      XHR module-id&quot;
+      404错误信息。例如，在下面的代码中定义了一个Textfield组件，但是模块
+      ID 错误拼写成 &quot;montage/ui/textfld.reel&quot;。
+    </para>
+    <programlisting>
+{
+&quot;emailInput&quot;: {
+    &quot;name&quot;: &quot;Textfield&quot;,
+    &quot;module&quot;: &quot;montage/ui/textfld.reel&quot;,
+    &quot;properties&quot;: {
+        &quot;element&quot;: {&quot;#&quot;: &quot;email&quot;}
+    }
+},
+</programlisting>
+    <para>
+      在Chrome控制台中，会出现如下错误信息：
+    </para>
+    <programlisting>
+GET http://localhost:8081/ui/textfeld.reel/textfld.js 404 (Not Found) browser.js:136
+Can't XHR &quot;http://localhost:8081/ui/textfield.reel/textfield.js&quot;
+</programlisting>
+  </sect2>
+  <sect2 id="unexpected-comma错误信息">
+    <title>&quot;unexpected comma&quot;错误信息。</title>
+    <para>
+      在对象结尾的逗号在JSON序列化中是不被允许的。JSON序列化必须是合法格式，这样MontageJS才能够成功解析。JSON对象定义的末尾或者是数组的最后一个元素后如果有逗号将产生运行时错误。在下面的例子中，readyState属性后面的逗号将产生解析错误：
+    </para>
+    <programlisting>
+&quot;anObject&quot;: {
+    &quot;id&quot;: &quot;123asd&quot;,
+    &quot;colors&quot;: [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;],
+    &quot;readystate&quot;: false,
+}
+</programlisting>
+    <para>
+      在下面代码中，<literal>&quot;passwordInput&quot;</literal> JSON
+      对象末尾的逗号也会产生&quot;unexpected comma&quot;运行时错误。
+    </para>
+    <programlisting>
+&lt;script type=&quot;text/montage-serialization&quot;&gt;
+{
+    &quot;emailInput&quot;: {
+        &quot;name&quot;: &quot;Textfield&quot;,
+        &quot;module&quot;: &quot;montage/ui/textfield.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;email&quot;}
+        }
+    },
+    &quot;passwordInput&quot;: {
+        &quot;name&quot;: &quot;Textfield&quot;,
+        &quot;module&quot;: &quot;montage/ui/textfield.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;password&quot;}
+        }
+    },
+}
+&lt;/script&gt;
+</programlisting>
+    <para>
+       
+    </para>
+    <programlisting>
+    Syntax error at line 16 from http://localhost:8081/examples/errors/:
+    },
+Unexpected comma.
+    1 
+    2 {
+    3     &quot;emailInput&quot;: {
+    4         &quot;name&quot;: &quot;Textfield&quot;,
+    5         &quot;module&quot;: &quot;montage/ui/textfield.reel&quot;,
+    6         &quot;properties&quot;: {
+    7             &quot;element&quot;: {&quot;#&quot;: &quot;email&quot;}
+    8         }
+    9     },
+   10     &quot;passwordInput&quot;: {
+   11         &quot;name&quot;: &quot;Textfield&quot;,
+   12         &quot;module&quot;: &quot;montage/ui/textfield.reel&quot;,
+   13         &quot;properties&quot;: {
+   14             &quot;element&quot;: {&quot;#&quot;: &quot;password&quot;}
+   15         }
+&gt;&gt;&gt;16     },
+   17 }
+   18
+   
+</programlisting>
+    <para>
+      移除第16行末尾的逗号可以修复这个错误。
+    </para>
+  </sect2>
+</sect1>

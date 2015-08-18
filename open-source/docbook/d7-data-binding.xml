@@ -1,0 +1,15 @@
+<sect1 id="数据绑定">
+  <title>数据绑定</title>
+  <blockquote>
+    <para>
+      <emphasis role="strong">备注:</emphasis>
+      我们正在编写数据绑定相关文档。现在你可以查看<ulink url="https://github.com/montagejs/frb/blob/master/README.md">Functional
+      Reactive</ulink>
+    </para>
+  </blockquote>
+  <para>
+    For a comparison between our old way of doing bindings
+    如果想知道关于老式绑定和FRB绑定的区别，请查看<ulink url="http://docs.montagestudio.com/montagejs/frb.html">FAQ
+    for the FRB transition</ulink>。
+  </para>
+</sect1>

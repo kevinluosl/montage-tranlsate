@@ -1,0 +1,153 @@
+<sect1 id="组件构成">
+  <title>组件构成</title>
+  <para>
+    你的应用是这样被构建出来的，在你的HTML模板文件中定义各种MontageJS的组件，然后把它们组合在一起。
+  </para>
+  <sect2 id="repetition">
+    <title><literal>Repetition</literal></title>
+    <para>
+      它是一个重复<literal>content</literal>数组的组件。以下的定义会告诉<literal>Repetition</literal>组件重复<literal>li</literal>，也就是重复它对应的<literal>Text</literal>组件，重复的次数是<literal>content</literal>数组的长度（在这个列子中是三次）。
+    </para>
+    <programlisting>
+&lt;script type=&quot;text/montage-serialization&quot;&gt;
+{
+    &quot;repetition&quot;: {
+        &quot;prototype&quot;: &quot;montage/ui/repetition.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;repetition&quot;},
+            &quot;content&quot;: [1,2,3]
+        }
+    }
+    &quot;text&quot;: {
+        &quot;prototype&quot;: &quot;montage/ui/text.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;text&quot;},
+            &quot;value&quot;: &quot;hello&quot;
+        }
+    }
+}
+&lt;/script&gt;
+
+&lt;body&gt;
+    &lt;ul data-montage-id=&quot;repetition&quot;&gt;
+        &lt;li data-montage-id=&quot;text&quot;&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/body&gt;
+</programlisting>
+  </sect2>
+  <sect2 id="condition">
+    <title><literal>Condition</literal></title>
+    <para>
+      例如以下的<literal>Condition</literal>组件设置只有当<literal>condition</literal>属性的值为<literal>true</literal>的时候才显示<literal>span</literal>的<literal>value</literal>
+      &quot;This is the
+      truth&quot;。在这个例子中<literal>condition</literal>为<literal>false</literal>，使得<literal>span</literal>不显示。
+    </para>
+    <programlisting>
+&lt;script type=&quot;text/montage-serialization&quot;&gt;
+{
+    &quot;condition&quot;: {
+        &quot;prototype&quot;: &quot;montage/ui/condition.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;condition&quot;},
+            &quot;condition&quot;: false
+        }
+    }
+    &quot;text&quot;: {
+        &quot;prototype&quot;: &quot;montage/ui/text.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;text&quot;},
+            &quot;value&quot;: &quot;This is the truth&quot;
+        }
+    }
+}
+&lt;/script&gt;
+
+&lt;body&gt;
+    &lt;div data-montage-id=&quot;condition&quot;&gt;
+        &lt;span data-montage-id=&quot;text&quot;&gt;&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+</programlisting>
+  </sect2>
+  <sect2 id="substitution">
+    <title><literal>Substitution</literal></title>
+    <para>
+      <literal>Substitution</literal>组件是让一组组件根据<literal>value</literal>的值只显示一个。
+    </para>
+    <programlisting>
+&lt;script type=&quot;text/montage-serialization&quot;&gt;
+{
+    &quot;customerNameSubstitution&quot;: {
+        &quot;prototype&quot;: &quot;montage/ui/substitution.reel&quot;
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;customerNameSubstitution&quot;},
+            &quot;switchComponents&quot;: {
+                &quot;read&quot; : &quot;montage/ui/text.reel&quot;
+                &quot;edit&quot; : &quot;montage/ui/input-text.reel&quot;
+            }
+            &quot;switchValue&quot;: &quot;read&quot;
+        },
+        &quot;bindings&quot;: {
+            &quot;value&quot;: {
+                &quot;&lt;-&quot;: &quot;@customer.name&quot;
+            }
+        }
+    }
+}
+&lt;/script&gt;
+
+&lt;body&gt;
+    Customer name: &lt;div data-montage-id=&quot;customerNameSubstitution&quot;&gt;&lt;/div&gt;
+&lt;/body&gt;
+</programlisting>
+  </sect2>
+  <sect2 id="组件模板参数">
+    <title>组件模板参数</title>
+    <para>
+      <literal>CustomComponent</literal>组件可以使用一个模板参数来替换它里面的内容。模板参数是指具有
+      <literal>data-arg</literal>属性的DOM节点。这个节点被标识成一个占位符，它的具体内容由外部的使用者提供。
+    </para>
+    <programlisting>
+&lt;script type=&quot;text/montage-serialization&quot;&gt;{
+    &quot;CustomComponent&quot;: {
+        &quot;prototype&quot;: &quot;my/custom-component.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;CustomComponent&quot;}
+        }
+    }
+    &quot;text&quot;: {
+        &quot;prototype&quot;: &quot;montage/ui/text.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;text&quot;},
+            &quot;value&quot;: &quot;I'm included.&quot;
+        }
+    }
+}&lt;/script&gt;
+
+&lt;body&gt;
+    &lt;div data-montage-id=&quot;CustomComponent&quot;&gt;
+        &lt;!-- inner template --&gt;
+        &lt;span data-montage-id=&quot;text&quot;&gt;&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+</programlisting>
+    <para>
+      <literal>CustomComponent</literal> 的模板:
+      <literal>my/custom-component.reel/custom-component.html</literal>
+    </para>
+    <programlisting>
+&lt;script type=&quot;text/montage-serialization&quot;&gt;{
+    &quot;owner&quot;: {
+        &quot;prototype&quot;: &quot;my/custom-component.reel&quot;
+    }
+}&lt;/script&gt;
+
+&lt;body&gt;
+    &lt;div&gt;
+        &lt;!-- template argument to be replaced by inner template --&gt;
+        &lt;span data-arg=&quot;*&quot;&gt;&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+</programlisting>
+  </sect2>
+</sect1>

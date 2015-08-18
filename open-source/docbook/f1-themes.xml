@@ -1,0 +1,27 @@
+<sect1 id="概述ui集合">
+  <title>概述:UI集合</title>
+  <para>
+    Montage框架提供三种类型的UI组件：Digit，Matte和Native。
+  </para>
+  <itemizedlist spacing="compact">
+    <listitem>
+      <para>
+        Digit 适合在平板电脑或者手机上使用，它对触屏进行了特殊处理。
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        Matte 适合在桌面电脑上使用。
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        Native 使用浏览器原生样式
+      </para>
+    </listitem>
+  </itemizedlist>
+  <para>
+    Digit
+    包含在MontageJS框架中。如果你想使用Matte或者Native，你需要单独安装。
+  </para>
+</sect1>

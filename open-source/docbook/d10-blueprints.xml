@@ -1,0 +1,191 @@
+<sect1 id="blueprints">
+  <title>Blueprints</title>
+  <para>
+    Montage
+    blueprints是一种为应用对象添加metadata信息的机制。blueprints已经支持组件和控制器对象。它是数据层的一个重要角色（还没用实现）。blueprint为对象添加的信息包括，对象的属性以及与其它对象的关系。
+  </para>
+  <para>
+    Blueprints就是一组描述信息。Montage为每个组件和控制器创建唯一的blueprint标识，这个标识会在反序列化的时候用到。Blueprints信息一般是从一个JSON文件反序列化得到，当然也可以用代码动态生成。
+  </para>
+  <sect2 id="组件和控制器对象的blueprints">
+    <title>组件和控制器对象的Blueprints</title>
+    <para>
+      可以通过组件或者控制器对象的<literal>blueprint</literal>属性访问blueprint。它返回一个关于blueprint反序列化的promise。
+    </para>
+    <para>
+      对象的blueprint包含一组关于对象属性的描述。blueprints数据也可以通过一个函数进行逻辑分组。blueprint同时也提供验证规则和必要绑定。验证规则对组件和控制器对象进行边界检查。
+    </para>
+  </sect2>
+  <sect2 id="blueprints属性">
+    <title>Blueprints属性</title>
+    <para>
+      一个blueprint属性描述对象的一个属性。除了定义blueprint属性名之外还包括基数，数据类型，合法值。基数定义属性可以使用的值。
+    </para>
+  </sect2>
+  <sect2 id="blueprints关系">
+    <title>Blueprints关系</title>
+    <para>
+      association属性定义两个对象之间的关系。它定义blueprint关系的目标对象。
+    </para>
+  </sect2>
+  <sect2 id="validation-rules-objects">
+    <title>Validation Rules Objects</title>
+    <para>
+      TDB
+    </para>
+  </sect2>
+  <sect2 id="creating-blueprints">
+    <title>Creating Blueprints</title>
+    <para>
+    </para>
+  </sect2>
+  <sect2 id="创建blueprints">
+    <title>创建Blueprints</title>
+    <para>
+      Although most developers will only interact with pre-existing
+      blueprints deserialized from a file, it is quite easy to create a
+      blueprint in memory:
+      大多数时候开发者只需要从一个文件反序列化得到Blueprints，我们也可以非常容易地在内存中创建一个blueprint：
+    </para>
+    <programlisting>
+var companyBinder = BlueprintBinder.create()
+    .initWithName(&quot;CompanyBinder&quot;);
+
+var personBlueprint = companyBinder
+    .addBlueprintNamed(&quot;Person&quot;, &quot;meta/blueprint/person&quot;);
+personBlueprint.addToOnePropertyBlueprintNamed(&quot;name&quot;);
+personBlueprint.addToManyPropertyBlueprintNamed(&quot;phoneNumbers&quot;);
+
+var companyBlueprint = companyBinder
+    .addBlueprintNamed(&quot;Company&quot;, &quot;meta/blueprint/company&quot;);
+companyBlueprint.addToOnePropertyBlueprintNamed(&quot;name&quot;);
+companyBlueprint.addToManyAssociationBlueprintNamed(
+    &quot;employees&quot;,
+    personBlueprint.addToOneAssociationBlueprintNamed(&quot;employer&quot;)
+);
+
+var projectBlueprint = companyBinder
+    .addBlueprintNamed(&quot;Project&quot;, &quot;meta/blueprint/project&quot;);
+projectBlueprint.addToOnePropertyBlueprintNamed(&quot;name&quot;);
+projectBlueprint.addToOnePropertyBlueprintNamed(&quot;startDate&quot;);
+projectBlueprint.addToOnePropertyBlueprintNamed(&quot;endDate&quot;);
+
+companyBlueprint.addToManyAssociationBlueprintNamed(
+    &quot;projects&quot;,
+    personBlueprint.addToOneAssociationBlueprintNamed(&quot;company&quot;)
+);
+
+personBlueprint.addToManyAssociationBlueprintNamed(
+    &quot;projects&quot;,
+    projectBlueprint.addToManyAssociationBlueprintNamed(&quot;contributors&quot;)
+);
+
+BlueprintBinder.manager.addBlueprintBinder(companyBinder);
+</programlisting>
+    <para>
+      组件更简单一些。比如下面是一个定义按钮组件blueprint的例子。
+    </para>
+    <programlisting>
+var serializer = Serializer.create().initWithRequire(require);
+
+//Create a new empty blueprint with the button identifier as a name.
+var newBlueprint = Blueprint.create().initWithName(button.identifier);
+
+// Then creat all the property description we need
+var autofocus = newBlueprint.addToOnePropertyBlueprintNamed(&quot;autofocus&quot;);
+autofocus.valueType = &quot;string&quot;;
+autofocus.helpKey = &quot;Specifies that a button should automatically get focus when the page loads&quot;;
+
+var enabled = newBlueprint.addToOnePropertyBlueprintNamed(&quot;enabled&quot;);
+enabled.valueType = &quot;boolean&quot;;
+enabled.helpKey = &quot;Specifies that a button should be enabled&quot;;
+
+var form = newBlueprint.addToOnePropertyBlueprintNamed(&quot;form&quot;);
+form.valueType = &quot;string&quot;;
+form.helpKey = &quot;Specifies one or more forms the button belongs to&quot;;
+
+var formaction = newBlueprint.addToOnePropertyBlueprintNamed(&quot;formaction&quot;);
+formaction.valueType = &quot;url&quot;;
+formaction.helpKey = &quot;Specifies where to send the form-data when a form is submitted. Only for type='submit'&quot;;
+
+var formenctype = newBlueprint.addToOnePropertyBlueprintNamed(&quot;formenctype&quot;);
+formenctype.valueType = &quot;enum&quot;;
+formenctype.enumValues = [&quot;application/x-www-form-urlencoded&quot;, &quot;multipart/form-data&quot;, &quot;text/plain&quot;];
+formenctype.helpKey = &quot;Specifies how form-data should be encoded before sending it to a server. Only for type='submit'&quot;;
+
+var formmethod = newBlueprint.addToOnePropertyBlueprintNamed(&quot;formmethod&quot;);
+formmethod.valueType = &quot;enum&quot;;
+formmethod.enumValues = [&quot;get&quot;, &quot;post&quot;];
+formmethod.helpKey = &quot;Specifies how to send the form-data (which HTTP method to use). Only for type='submit'&quot;;
+
+var formnovalidate = newBlueprint.addToOnePropertyBlueprintNamed(&quot;formnovalidate&quot;);
+formnovalidate.valueType = &quot;boolean&quot;;
+formnovalidate.helpKey = &quot;Specifies that the form-data should not be validated on submission. Only for type='submit'&quot;;
+
+var formtarget = newBlueprint.addToOnePropertyBlueprintNamed(&quot;formtarget&quot;);
+formtarget.valueType = &quot;string&quot;;
+formtarget.helpKey = &quot;Specifies where to display the response after submitting the form. Only for type='submit'&quot;;
+
+var name = newBlueprint.addToOnePropertyBlueprintNamed(&quot;name&quot;);
+name.valueType = &quot;string&quot;;
+name.helpKey = &quot;Specifies a name for the button&quot;;
+
+var label = newBlueprint.addToOnePropertyBlueprintNamed(&quot;label&quot;);
+label.valueType = &quot;string&quot;;
+label.helpKey = &quot;&quot;;
+
+var type = newBlueprint.addToOnePropertyBlueprintNamed(&quot;type&quot;);
+type.valueType = &quot;enum&quot;;
+type.enumValues = [&quot;button&quot;, &quot;reset&quot;, &quot;submit&quot;];
+type.helpKey = &quot;Specifies the type of button&quot;;
+
+var value = newBlueprint.addToOnePropertyBlueprintNamed(&quot;value&quot;);
+value.valueType = &quot;string&quot;;
+value.helpKey = &quot;Specifies an initial value for the button&quot;;
+
+// And assign the property in groups following the logic for user presentation
+newBlueprint.addPropertyBlueprintToGroupNamed(
+    newBlueprint.propertyBlueprintForName(&quot;label&quot;), &quot;base&quot;
+);
+newBlueprint.addPropertyBlueprintToGroupNamed(
+    newBlueprint.propertyBlueprintForName(&quot;type&quot;), &quot;base&quot;
+);
+newBlueprint.addPropertyBlueprintToGroupNamed(
+    newBlueprint.propertyBlueprintForName(&quot;name&quot;), &quot;base&quot;
+);
+newBlueprint.addPropertyBlueprintToGroupNamed(
+    newBlueprint.propertyBlueprintForName(&quot;enabled&quot;), &quot;base&quot;
+);
+newBlueprint.addPropertyBlueprintToGroupNamed(
+    newBlueprint.propertyBlueprintForName(&quot;autofocus&quot;), &quot;base&quot;
+);
+newBlueprint.addPropertyBlueprintToGroupNamed(
+    newBlueprint.propertyBlueprintForName(&quot;form&quot;), &quot;form&quot;
+);
+newBlueprint.addPropertyBlueprintToGroupNamed(
+    newBlueprint.propertyBlueprintForName(&quot;formaction&quot;), &quot;form&quot;
+);
+newBlueprint.addPropertyBlueprintToGroupNamed(
+    newBlueprint.propertyBlueprintForName(&quot;formenctype&quot;), &quot;form&quot;
+);
+newBlueprint.addPropertyBlueprintToGroupNamed(
+    newBlueprint.propertyBlueprintForName(&quot;formmethod&quot;), &quot;form&quot;
+);
+newBlueprint.addPropertyBlueprintToGroupNamed(
+    newBlueprint.propertyBlueprintForName(&quot;formnovalidate&quot;), &quot;form&quot;
+);
+newBlueprint.addPropertyBlueprintToGroupNamed(
+    newBlueprint.propertyBlueprintForName(&quot;formtarget&quot;), &quot;form&quot;
+);
+button.blueprint = newBlueprint;
+
+// Use the blueprint.
+// Careful that the blueprint method return a promise.
+var blueprintPromise = button.blueprint;
+blueprintPromise.then(function (blueprint) {
+    var serializedDescription = serializer.serializeObject(blueprint);
+    console.log(serializedDescription);
+});
+</programlisting>
+  </sect2>
+</sect1>

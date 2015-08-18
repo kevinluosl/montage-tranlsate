@@ -1,0 +1,507 @@
+<sect1 id="使用repetition组件">
+  <title>使用<literal>Repetition</literal>组件</title>
+  <para>
+    <literal>Repetition</literal>组件的作用是根据数组提供的数据重复显示一组元素，<literal>Repetition</literal>对数据的每次循环会生成一个元素。<literal>Repetition</literal>的数据通过一个控制器管理。你可以手动对<literal>Repetition</literal>设置简单的数组数据，或者通过设置<literal>Repetition</literal>的<literal>contentController</literal>属性为<literal>RangeController</literal>来处理复杂类型的数据。
+  </para>
+  <para>
+    你可以使用<literal>Repetition</literal>来循环显示任意数量的其他组件。（比如MontageJS
+    List组件，它就是使用<literal>Repetition</literal>实现的）使用可绑定的<literal>iteration.object</literal>模版属性表示当前的List项。
+  </para>
+</sect1>
+<sect1 id="简单的repetition">
+  <title>简单的<literal>Repetition</literal></title>
+  <para>
+    下面的例子展示了一个简单的<literal>Repetition</literal>组件的使用方式。它显示3个元素。每次循环都将从<literal>Repetition</literal>的<literal>content</literal>属性中取出一个值，根据这个值渲染当前重复元素。
+  </para>
+  <programlisting>
+&lt;div data-montage-id=&quot;content&quot; class=&quot;Content&quot;&gt;
+    &lt;ul data-montage-id=&quot;items&quot;&gt;
+        &lt;li data-montage-id=&quot;item&quot;&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;
+</programlisting>
+  <para>
+     
+  </para>
+  <programlisting>
+{
+    &quot;owner&quot;: {
+        &quot;properties&quot;: {
+            &quot;element&quot;: { &quot;#&quot;: &quot;content&quot; }
+        }
+    },
+    &quot;items&quot;: {
+        &quot;prototype&quot;: &quot;montage/ui/repetition.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: { &quot;#&quot;: &quot;items&quot; }
+        },
+        &quot;bindings&quot;: {
+            &quot;content&quot;: { &quot;&lt;-&quot;: &quot;@owner.myListProperty&quot; }
+        }
+    },
+    &quot;item&quot;: {
+        &quot;prototype&quot;: &quot;montage/ui/text.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: { &quot;#&quot;: &quot;item&quot; }
+        },
+        &quot;bindings&quot;: {
+            &quot;value&quot;: { &quot;&lt;-&quot;: &quot;@items:iteration.object.quote&quot; },
+            &quot;classList.has('highlight')&quot;: { &quot;&lt;-&quot;: &quot;@items:iteration.object.important&quot; }
+        }
+    }
+}
+</programlisting>
+  <para>
+     
+  </para>
+  <programlisting>
+.highlight {
+    font-weight: bold;
+}   
+</programlisting>
+  <para>
+     
+  </para>
+  <programlisting>
+var Component = require(&quot;montage/ui/component&quot;).Component;
+
+exports.Content = Component.specialize({
+    myListProperty: {
+        value: [{
+            &quot;quote&quot;: &quot;If music be the food of love, play on.&quot;,
+            &quot;important&quot;: false
+        }, {
+            &quot;quote&quot;: &quot;O Romeo, Romeo! wherefore art thou Romeo?&quot;,
+            &quot;important&quot;: true
+        }, {
+            &quot;quote&quot;: &quot;All that glitters is not gold.&quot;,
+            &quot;important&quot;: false
+        }, {
+            &quot;quote&quot;: &quot;I am amazed and know not what to say.&quot;,
+            &quot;important&quot;: false
+        }]
+    }
+});
+</programlisting>
+  <para>
+    结果请查看<ulink url="http://montagejs.github.io/mfiddle/#!/7882151">Mfiddle</ulink>
+  </para>
+</sect1>
+<sect1 id="使用rangecontroller设置repetition">
+  <title>使用<literal>RangeController</literal>设置<literal>Repetition</literal></title>
+  <para>
+    在这个例子中：
+  </para>
+  <itemizedlist spacing="compact">
+    <listitem>
+      <para>
+        <literal>RangeController</literal>被赋值给了<literal>Repetition</literal>的<literal>contentController</literal>属性用于管理<literal>Repetition</literal>数据。
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        <literal>Text</literal>组件是<literal>Repetition</literal>的子组件，它的<literal>value</literal>值来自<literal>iteration.object</literal>属性。
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        点击Change
+        Content按钮来替换<literal>Repetiion</literal>的数据为新的随机内容。
+      </para>
+    </listitem>
+  </itemizedlist>
+  <para>
+     
+  </para>
+  <programlisting>
+&lt;div data-montage-id=&quot;component&quot;&gt;
+    &lt;button data-montage-id=&quot;button&quot;&gt;&lt;/button&gt;
+    &lt;ul data-montage-id=&quot;repetition&quot;&gt;
+        &lt;li data-montage-id=&quot;value&quot;&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;
+</programlisting>
+  <para>
+     
+  </para>
+  <programlisting>
+{
+    &quot;owner&quot;: {
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;component&quot;}
+        }
+    },
+    &quot;repetition&quot;: {
+        &quot;prototype&quot;: &quot;montage/ui/repetition.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;repetition&quot;},
+            &quot;contentController&quot;: {&quot;@&quot;: &quot;rangeController&quot;}
+        }
+    },
+    &quot;rangeController&quot;: {
+        &quot;prototype&quot;: &quot;montage/core/range-controller&quot;
+    },
+    &quot;value&quot;: {
+        &quot;prototype&quot;: &quot;montage/ui/text.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;value&quot;}
+        },
+        &quot;bindings&quot;: {
+            &quot;value&quot;: {&quot;&lt;-&quot;: &quot;@repetition:iteration.object.quote&quot;}
+        }
+    },
+    &quot;changeButton&quot;: {
+        &quot;prototype&quot;: &quot;digit/ui/button.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;button&quot;},
+            &quot;label&quot;: &quot;Change Content&quot;
+        },
+        &quot;listeners&quot;: [
+            {
+                &quot;type&quot;: &quot;action&quot;,
+                &quot;listener&quot;: {&quot;@&quot;: &quot;owner&quot;}
+            }
+        ]
+    }
+}
+</programlisting>
+  <para>
+     
+  </para>
+  <programlisting>
+    var Component = require(&quot;montage/ui/component&quot;).Component;
+
+exports.Owner = Component.specialize({
+    constructor: {
+        value: function Owner() {
+            this.content = [{
+                &quot;quote&quot;: &quot;If music be the food of love, play on.&quot;,
+                &quot;important&quot;: false
+            }, {
+                &quot;quote&quot;: &quot;O Romeo, Romeo! wherefore art thou Romeo?&quot;,
+                &quot;important&quot;: true
+            }, {
+                &quot;quote&quot;: &quot;All that glitters is not gold.&quot;,
+                &quot;important&quot;: false
+            }, {
+                &quot;quote&quot;: &quot;I am amazed and know not what to say.&quot;,
+                &quot;important&quot;: false
+            }];
+        }
+    },
+
+    templateDidLoad: {
+        value: function () {
+            this.templateObjects.rangeController.content = this.content;
+        }
+    },
+
+    handleChangeButtonAction: {
+        value: function (evt) {
+            var randomContentIndex = Math.floor(Math.random() * this.content.length);
+            this.templateObjects.rangeController.add(this.content[randomContentIndex]);
+        }
+    }
+});
+</programlisting>
+  <para>
+    点击<ulink url="http://montagejs.github.io/mfiddle/#!/7883458">Middle</ulink>查看结果。
+  </para>
+</sect1>
+<sect1 id="repetition中排序和过滤的用法">
+  <title><literal>Repetition</literal>中排序和过滤的用法</title>
+  <para>
+    你可以使用FRB表达式对<literal>Repetition</literal>关联的<literal>RangeController</literal>的数据进行排序或者过滤。
+  </para>
+  <itemizedlist spacing="compact">
+    <listitem>
+      <para>
+        对数据进行过滤。
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        当数据的<literal>filterPath</literal>值是<literal>false</literal>，这个数据不会显示在<literal>Repetiiton</literal>中。
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        使用<literal>sortPath</literal>对数据进行排序。
+      </para>
+    </listitem>
+  </itemizedlist>
+  <para>
+    你当然可以使用复杂的表达式对数据进行排序和过滤，举个例子，<literal>Repetition</literal>的数据里有一个<literal>index</literal>属性是数字类型，我们可以使用<literal>!(index%2)</literal>来过滤掉奇数。
+  </para>
+  <programlisting>
+&lt;div data-montage-id=&quot;component&quot;&gt;
+    &lt;button data-montage-id=&quot;filterButton&quot;&gt;&lt;/button&gt;
+    &lt;button data-montage-id=&quot;sortButton&quot;&gt;&lt;/button&gt;
+
+    &lt;ul data-montage-id=&quot;repetition&quot;&gt;
+        &lt;li data-montage-id=&quot;quote&quot;&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;
+</programlisting>
+  <para>
+     
+  </para>
+  <programlisting>
+{
+    &quot;owner&quot;: {
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;component&quot;}
+        }
+    },
+    &quot;repetition&quot;: {
+        &quot;prototype&quot;: &quot;montage/ui/repetition.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;repetition&quot;},
+            &quot;contentController&quot;: {&quot;@&quot;: &quot;rangeController&quot;}
+        }
+    },
+    &quot;rangeController&quot;: {
+        &quot;prototype&quot;: &quot;montage/core/range-controller&quot;
+    },
+
+    &quot;quote&quot;: {
+        &quot;prototype&quot;: &quot;montage/ui/text.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;quote&quot;}
+        },
+        &quot;bindings&quot;: {
+            &quot;value&quot;: {&quot;&lt;-&quot;: &quot;@repetition:iteration.object.quote&quot;}
+        }
+    },
+
+    &quot;filterButton&quot;: {
+        &quot;prototype&quot;: &quot;digit/ui/button.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;filterButton&quot;},
+            &quot;label&quot;: &quot;Filter&quot;
+        },
+        &quot;listeners&quot;: [
+            {
+                &quot;type&quot;: &quot;action&quot;,
+                &quot;listener&quot;: {&quot;@&quot;: &quot;owner&quot;}
+            }
+        ]
+    },
+
+    &quot;sortButton&quot;: {
+        &quot;prototype&quot;: &quot;digit/ui/button.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;sortButton&quot;},
+            &quot;label&quot;: &quot;Sort&quot;
+        },
+        &quot;listeners&quot;: [
+            {
+                &quot;type&quot;: &quot;action&quot;,
+                &quot;listener&quot;: {&quot;@&quot;: &quot;owner&quot;}
+            }
+        ]
+    }
+}
+</programlisting>
+  <para>
+     
+  </para>
+  <programlisting>
+var Component = require(&quot;montage/ui/component&quot;).Component;
+
+exports.Owner = Component.specialize({
+    constructor: {
+        value: function Owner() {
+            this.content = [{
+                &quot;quote&quot;: &quot;If music be the food of love, play on.&quot;,
+                &quot;important&quot;: false
+            }, {
+                &quot;quote&quot;: &quot;O Romeo, Romeo! wherefore art thou Romeo?&quot;,
+                &quot;important&quot;: true
+            }, {
+                &quot;quote&quot;: &quot;All that glitters is not gold.&quot;,
+                &quot;important&quot;: false
+            }, {
+                &quot;quote&quot;: &quot;I am amazed and know not what to say.&quot;,
+                &quot;important&quot;: false
+            }];
+        }
+    },
+
+    templateDidLoad: {
+        value: function () {
+            this.templateObjects.rangeController.content = this.content;
+        }
+    },
+
+    handleFilterButtonAction: {
+        value: function () {
+            var rangeController = this.templateObjects.rangeController;
+            // toggle filterPath to either filter by &quot;important&quot; key or not filter
+            rangeController.filterPath = rangeController.filterPath ? &quot;&quot; : &quot;important&quot;;
+        }
+    },
+
+    handleSortButtonAction: {
+        value: function () {
+            var rangeController = this.templateObjects.rangeController;
+            // toggle sortPath to either filter by &quot;quote&quot; key or not filter
+            rangeController.sortPath = rangeController.sortPath ? &quot;&quot; : &quot;quote&quot; ;
+        }
+    }
+});
+</programlisting>
+  <para>
+    点击<ulink url="http://montagejs.github.io/mfiddle/#!/7884201">Mfiddle</ulink>查看结果。
+  </para>
+  <para>
+    <literal>RangeController</literal>使用FRB来<ulink url="http://documentup.com/montagejs/frb/#tutorial/filter">过滤</ulink>和<ulink url="http://documentup.com/montagejs/frb/#tutorial/sorted">排序</ulink>。你可以在绑定表达始中使用FRB函数。比如：
+  </para>
+  <programlisting>
+{
+    &quot;bindings&quot;: {
+        &quot;filteredEvens&quot;: {&quot;&lt;-&quot;: &quot;numbers.filter{!(%2)}&quot;},
+        &quot;sorted&quot;: {&quot;&lt;-&quot;: &quot;numbers.sorted{}&quot;}
+    }
+}
+</programlisting>
+</sect1>
+<sect1 id="允许用户选择repetiton循环生成的元素">
+  <title>允许用户选择<literal>Repetiton</literal>循环生成的元素</title>
+  <para>
+    你需要进行以下设置来开启<literal>Repetition</literal>的&quot;选择&quot;功能：
+  </para>
+  <itemizedlist spacing="compact">
+    <listitem>
+      <para>
+        设置<literal>Repetition</literal>的<literal>isSelectionEnabled</literal>属性为<literal>true</literal>。
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        <literal>selected</literal>Css规则会自动被添加给选中的元素。
+      </para>
+    </listitem>
+  </itemizedlist>
+  <para>
+    注意用户是可以同时选择多个元素的。
+  </para>
+  <programlisting>
+&lt;div data-montage-id=&quot;component&quot;&gt;
+    &lt;div data-montage-id=&quot;repetition&quot;&gt;
+        &lt;p data-montage-id=&quot;value&quot;&gt;&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;select data-montage-id=&quot;select&quot;&gt;&lt;/select&gt;
+    &lt;p data-montage-id=&quot;log&quot;&gt;&lt;/p&gt;
+&lt;/div&gt;
+</programlisting>
+  <para>
+     
+  </para>
+  <programlisting>
+{
+    &quot;owner&quot;: {
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;component&quot;}
+        }
+    },
+    &quot;repetition&quot;: {
+        &quot;prototype&quot;: &quot;montage/ui/repetition.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;repetition&quot;},
+            &quot;isSelectionEnabled&quot;: true,
+            &quot;contentController&quot;: {&quot;@&quot;: &quot;rangeController&quot;}
+        }
+    },
+    &quot;rangeController&quot;: {
+        &quot;prototype&quot;: &quot;montage/core/range-controller&quot;,
+        &quot;properties&quot;: {
+            &quot;selection&quot;: []
+        }
+    },
+
+    &quot;value&quot;: {
+        &quot;prototype&quot;: &quot;montage/ui/text.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;value&quot;}
+        },
+        &quot;bindings&quot;: {
+            &quot;value&quot;: {&quot;&lt;-&quot;: &quot;@repetition:iteration.object.quote&quot;}
+        }
+    },
+
+    &quot;select&quot;: {
+        &quot;prototype&quot;: &quot;digit/ui/select.reel&quot;,
+        &quot;properties&quot;: {
+            &quot;element&quot;: {&quot;#&quot;: &quot;select&quot;},
+            &quot;contentController&quot;: {&quot;@&quot;: &quot;rangeController&quot;},
+            &quot;labelPropertyName&quot;: &quot;quote&quot;
+        }
+    },
+    &quot;log&quot;: {
+       &quot;prototype&quot;: &quot;montage/ui/text.reel&quot;,
+       &quot;properties&quot;: {
+           &quot;element&quot;: {&quot;#&quot;: &quot;log&quot;}
+       },
+       &quot;bindings&quot;: {
+           &quot;value&quot;: {&quot;&lt;-&quot;: &quot;@owner.message&quot;}
+       }
+    }
+}
+</programlisting>
+  <para>
+     
+  </para>
+  <programlisting>
+.selected {
+    color:red;
+}
+</programlisting>
+  <para>
+     
+  </para>
+  <programlisting>
+var Component = require(&quot;montage/ui/component&quot;).Component;
+
+exports.Owner = Component.specialize({
+    constructor: {
+        value: function Owner() {
+            this.content = [{
+                &quot;quote&quot;: &quot;If music be the food of love, play on.&quot;,
+                &quot;important&quot;: false
+            }, {
+                &quot;quote&quot;: &quot;O Romeo, Romeo! wherefore art thou Romeo?&quot;,
+                &quot;important&quot;: true
+            }, {
+                &quot;quote&quot;: &quot;All that glitters is not gold.&quot;,
+                &quot;important&quot;: false
+            }, {
+                &quot;quote&quot;: &quot;I am amazed and know not what to say.&quot;,
+                &quot;important&quot;: false
+            }];
+        }
+    },
+
+    templateDidLoad: {
+        value: function () {
+            this.templateObjects.rangeController.content = this.content;
+            //Observe the selection for changes
+            this.templateObjects.rangeController.addRangeAtPathChangeListener(
+                &quot;selection&quot;, this, &quot;handleSelectionChange&quot;);
+        }
+    },
+
+    handleSelectionChange: {
+        value: function (plus, minus) {
+           this.message = &quot;Selection changed from: &quot;
+                + (minus[0] ? minus[0].quote : &quot;nothing&quot;)
+                + &quot; -&gt; &quot;
+                + (plus[0] ? plus[0].quote : &quot;nothing&quot;);
+        }
+    }
+});
+</programlisting>
+  <para>
+    点击<ulink url="http://montagejs.github.io/mfiddle/#!/7884716">Mfiddle</ulink>查看结果。
+  </para>
+</sect1>

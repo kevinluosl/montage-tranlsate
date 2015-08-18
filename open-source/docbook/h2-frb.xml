@@ -1,0 +1,229 @@
+<sect1 id="faq---frb-语法变化">
+  <title>FAQ - FRB 语法变化</title>
+  <para>
+    在
+    <ulink url="http://docs.montagestudio.com/montagejs/documentup.com/montagejs/frb/">FRB文档</ulink>查看更多关于FRB介绍。
+  </para>
+  <sect2 id="如何监听对象属性值改变">
+    <title>如何监听对象属性值改变?</title>
+    <para>
+      以前
+    </para>
+    <programlisting>
+myObject.addPropertyChangeListener(&quot;path&quot;, handler)
+</programlisting>
+    <para>
+      当属性path值改变之后会调用<literal>myObject.handleChange(notification)</literal>
+    </para>
+    <para>
+      现在
+    </para>
+    <programlisting>
+    aMontageObject.addPathChangeListener(&quot;path&quot;, handler, opt_methodName)
+
+// or
+
+Montage.addPathChangeListener.call(
+    myObject, &quot;path&quot;, handler, opt_methodName
+)
+</programlisting>
+    <para>
+      <literal>aMontageObject</literal>对象的原型链上需要包含Montage：<literal>Montage.isPrototypeOf(aMontageObject) === true</literal>。
+    </para>
+    <para>
+      当属性path值改变（path属性被重新赋值而不是path值对象内部改变）之后，下面列表中的方法按照顺序调用，参数包括<literal>newValue</literal>,
+      <literal>path</literal>, 和
+      <literal>myObject</literal>（注意，只会调用一个方法）。
+    </para>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          <literal>handler[methodName]</literal>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <literal>handler.handlePathChange</literal>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <literal>handler</literal>
+        </para>
+      </listitem>
+    </itemizedlist>
+  </sect2>
+  <sect2 id="如何监听对象属性值将要发生改变">
+    <title>如何监听对象属性值将要发生改变?</title>
+    <para>
+      以前
+    </para>
+    <programlisting>
+myObject.addPropertyChangeListener(&quot;path&quot;, handler, true)
+</programlisting>
+    <para>
+      现在
+    </para>
+    <programlisting>
+    aMontageObject.addPathChangeListener(&quot;path&quot;, handler, &quot;handleMethodName&quot;, true)
+
+// or
+
+Montage.addPathChangeListener.call(
+    myObject, &quot;path&quot;, handler, &quot;handleMethodName&quot;, true
+)
+</programlisting>
+  </sect2>
+  <sect2 id="如何把一个对象的属性绑定到另外一个对象的属性两个属性值始终相同">
+    <title>如何把一个对象的属性绑定到另外一个对象的属性，两个属性值始终相同?</title>
+    <para>
+      以前
+    </para>
+    <programlisting>
+Object.defineBinding(myObject, &quot;myProperty&quot;, {
+    boundObject: anotherObject,
+    boundObjectPropertyPath: &quot;foo.bar&quot;
+});
+</programlisting>
+    <para>
+      现在
+    </para>
+    <programlisting>
+aMontageObject.defineBinding(&quot;myProperty&quot;, {
+    &quot;&lt;-&gt;&quot;: &quot;foo.bar&quot;,
+    source: anotherObject
+});
+
+// or
+
+var Bindings = require(&quot;montage/core/bindings&quot;).Bindings;
+Bindings.defineBinding(myObject, &quot;myProperty&quot;, {
+    &quot;&lt;-&gt;&quot;: &quot;foo.bar&quot;,
+    source: anotherObject
+});
+</programlisting>
+  </sect2>
+  <sect2 id="如何绑定一个对象的属性到另外一个对象的属性但是当第一个对象属性值发生改变后第二个对象属性值不改变">
+    <title>如何绑定一个对象的属性到另外一个对象的属性，但是当第一个对象属性值发生改变后第二个对象属性值不改变?</title>
+    <para>
+      以前
+    </para>
+    <programlisting>
+Object.defineBinding(myObject, &quot;myProperty&quot;, {
+    boundObject: anotherObject,
+    boundObjectPropertyPath: &quot;foo.bar&quot;,
+    oneway: true
+});
+</programlisting>
+    <para>
+      现在
+    </para>
+    <programlisting>
+aMontageObject.defineBinding(&quot;myProperty&quot;, {
+    &quot;&lt;-&quot;: &quot;foo.bar&quot;,
+    source: anotherObject
+});
+
+// or
+
+var Bindings = require(&quot;montage/core/bindings&quot;).Bindings;
+Bindings.defineBinding(myObject, &quot;myProperty&quot;, {
+    &quot;&lt;-&quot;: &quot;foo.bar&quot;,
+    source: anotherObject
+});
+</programlisting>
+  </sect2>
+  <sect2 id="如何监听数组添加或者移除元素">
+    <title>如何监听数组添加或者移除元素?</title>
+    <programlisting>
+aMontageObject.addRangeAtPathChangeListener(
+    &quot;array&quot;, handler, &quot;handleArrayRangeChange&quot;
+);
+
+// or
+
+Montage.addRangeAtPathChangeListener(
+    myObject, &quot;array&quot;, handler, &quot;handleArrayRangeChange&quot;
+);
+</programlisting>
+    <para>
+      <literal>handler.handleArrayRangeChange</literal>方法会传入三个参数：
+      <literal>plus</literal>, <literal>minus</literal>, 和
+      <literal>index</literal>。
+    </para>
+  </sect2>
+  <sect2 id="如何当一个私有属性改变之后触发公开属性改变">
+    <title>如何当一个私有属性改变之后，触发公开属性改变?</title>
+    <para>
+      以前
+    </para>
+    <programlisting>
+myObject.dispatchPropertyChange(
+    &quot;affectedProperty&quot;,
+    &quot;anotherAffectProperty&quot;,
+    function () {myObject._underlyingProperty = newValue}
+);
+</programlisting>
+    <para>
+      现在
+    </para>
+    <programlisting>
+myObject.dispatchBeforeOwnPropertyChange(
+    &quot;affectedProperty&quot;, myObject.affectedProperty
+);
+
+myObject.dispatchBeforeOwnPropertyChange(
+    &quot;anotherAffectedProperty&quot;, myObject.anotherAffectedProperty
+);
+
+myObject._underlyingProperty = newValue;
+
+myObject.dispatchOwnPropertyChange(
+    &quot;affectedProperty&quot;, myObject.affectedProperty
+);
+
+myObject.dispatchOwnPropertyChange(
+    &quot;anotherAffectedProperty&quot;, myObject.anotherAffectedProperty
+);
+</programlisting>
+  </sect2>
+  <sect2 id="如何让checkbox禁用有自动取消选择">
+    <title>如何让checkbox禁用有自动取消选择?</title>
+    <para>
+      使用单向绑定<literal>&lt;-</literal> <literal>checked</literal>
+      值为 <literal>checked &amp;&amp; enabled</literal>，
+      这样就可以实现当checkbox禁用以后自动取消选择，启用以后又恢复之前状态
+    </para>
+  </sect2>
+  <sect2 id="如果实现-全选-或者-全部不选-checkbox">
+    <title>如果实现 “全选” 或者 “全部不选” checkbox</title>
+    <para>
+      绑定是双向的，checkbox状态包括：是否所有的checkbox全部选中，是否全部没有选。
+      也需要在checkbox点击之后全选或者全部不选。
+    </para>
+    <programlisting>
+checkboxes.every{checked} &lt;-&gt; allChecked
+checkboxes.every{!checked} &lt;-&gt; noneChecked
+</programlisting>
+    <para>
+      FRB支持绑定到一组数据的 &quot;every&quot; 或者 &quot;some&quot;。
+    </para>
+  </sect2>
+  <sect2 id="如果checkbox可以被禁用呢">
+    <title>如果Checkbox可以被禁用呢？</title>
+    <programlisting>
+checkbox.checked &lt;- checked &amp;&amp; enabled
+checkboxes.every{checked || !enabled} &lt;-&gt; allChecked
+checkboxes.every{!checked} &lt;-&gt; noneChecked
+</programlisting>
+    <para>
+      <literal>|| !enabled</literal>
+      表达式有两个目的。如果checkbox禁用之后，第一个绑定改变它为不选。如果没有<literal>|| !enabled</literal>表达式，会让<literal>allChecked</literal>为false,因为不应该让禁用的checkbox参与到allChecked判断中。
+      有<literal>|| !enabled</literal>表达式限制，<literal>checked || !enabled</literal>值就是true,这样<literal>allChecked</literal>就是正确的值<literal>true</literal>。
+    </para>
+    <para>
+      反方向上，当<literal>allChecked</literal>改变为true，如果没有<literal>|| !enabled</literal>表达，会让所有禁用的checkboxes改变为选中状态。
+      现在这样<literal>checked || !enabled</literal>表达式的值已经是true，checkbox就不会改变为选中状态。
+    </para>
+  </sect2>
+</sect1>
