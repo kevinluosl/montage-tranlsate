@@ -1,5 +1,5 @@
-用MontageJS创建 3D 应用
-======================
+#用MontageJS创建 3D 应用
+
 创建浏览器3D应用不是轻而易举的。[WebGL](http://www.khronos.org/webgl/)开发了一套针对浏览器3D图形硬件加速的免费插件，它是一套底层图形处理API，对习惯只使用web功能的前端工程师会有比较高的学习门槛。
 
 为了帮助开发者能够以一种简单的方式在浏览器中创建交互式3D应用，MontageJS框架提供一个叫做SceneView的组件。SceneView是一个基于WebGL的3D组件，让开发者可以像操作DOM中的HTML元素一样的简单方式操作3D场景中的元素。

@@ -1,5 +1,5 @@
-MontageJS FAQ
-=============
+#MontageJS FAQ
+
 以下链接可以查看有关MontageJS常见提问和回复。
 
 * [常见提问](http://docs.montagestudio.com/montagejs/faq.html#general)

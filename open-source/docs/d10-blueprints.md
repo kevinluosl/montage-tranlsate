@@ -1,5 +1,5 @@
-Blueprints
-==========
+#Blueprints
+
 Montage blueprints是一种为应用对象添加metadata信息的机制。blueprints已经支持组件和控制器对象。它是数据层的一个重要角色（还没用实现）。blueprint为对象添加的信息包括，对象的属性以及与其它对象的关系。
 
 Blueprints就是一组描述信息。Montage为每个组件和控制器创建唯一的blueprint标识，这个标识会在反序列化的时候用到。Blueprints信息一般是从一个JSON文件反序列化得到，当然也可以用代码动态生成。

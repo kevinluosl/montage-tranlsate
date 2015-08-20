@@ -1,5 +1,5 @@
-MontageJS 对象
-=================
+#MontageJS 对象
+
 MontageJS在JavaScript对象继承方式上做了一层简单封装。类型通过`constructor`方法构造。构造器有一个`prototype`。 `prototype`又有一个`constructor`方法。当在对象上执行`instanceof`和`new`时就跟JavaScript对象一样。
 
 例如，下面的A和B两个例子是同等的：

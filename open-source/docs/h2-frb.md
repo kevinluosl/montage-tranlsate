@@ -1,5 +1,5 @@
-FAQ - FRB 语法变化
-====================
+#FAQ - FRB 语法变化
+
 在 [FRB文档](http://docs.montagestudio.com/montagejs/documentup.com/montagejs/frb/)查看更多关于FRB介绍。
 
 ####如何监听对象属性值改变?

@@ -1,5 +1,5 @@
-Gestures & Composers
-====================
+#Gestures & Composers
+
 Montage使用`Composer` [API](https://github.com/montagejs/montage/tree/master/composer)来支持常见的手势。 比如与设备相关的`DOM`事件click和touch。`Composer` API把这两个事件抽象为一个press事件，这样你就不需要设置多个事件监听。Montage已经支持以下事件：
 
 * press / long press

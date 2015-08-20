@@ -1,5 +1,5 @@
-MontageJS组件
-============
+#MontageJS组件
+
 MontageJS应用可以看作是一个模型控制层，它同时需要处理数据和将模型里面的数据读取显示到视图上面。组件处理的是MontageJS应用的视图部分。按照约定，这些组件放在MontageJS应用的ui文件夹里面（这样有助于你使用任何的MontageJS包和容易定位它里面提供的用户界面组件）。
 
 MontageJS组件是封装的；通过结构（HTML），样式（CSS），功能（JavaScript)来构建一个强大的用户界面组件，所有这些文件都存放在同一个目录里面，目录的名字以`.reel`结尾。比如，一个`FooBar`组件存在放MontageJS应用的`ui`目录里面`montageapp/ui/foo-bar.reel`。 这个`.reel`目录包含`foo-bar.css`, `foo-bar.html`, 和 `foo-bar.js`。因为组件都是自包含的，这样就非常容易使用，重命名，或者移除一个组件，移除的时候不需要在很多目录里面去查找组件的各个部分然后逐一删除。

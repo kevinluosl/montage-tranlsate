@@ -1,5 +1,4 @@
-MontageJS加载过程
-================
+#MontageJS加载过程
 
 >__备注:__ "mopped"和'mop'相关，[Monrage优化工具](https://github.com/montagejs/mop)
 

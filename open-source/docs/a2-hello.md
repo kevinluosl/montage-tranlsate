@@ -1,5 +1,4 @@
-Hello MontageJS
-================
+#Hello MontageJS
 
 你已经成功配置并且运行了第一个MontageJS应用，但是只有一个空白的页面：接下来我们做什么呢？
 
